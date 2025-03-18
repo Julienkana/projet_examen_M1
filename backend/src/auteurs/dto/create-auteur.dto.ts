@@ -1,6 +1,15 @@
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+
 export class CreateAuteurDto {
-    nom: string;
-    photo: string;
-    biographie: string;
-  }
-  
+  @IsNotEmpty()
+  @IsString()
+  nom: string;
+
+  @IsOptional()
+  @IsString()
+  photo?: string;
+
+  @IsNotEmpty()
+  @IsString()
+  biographie: string;
+}

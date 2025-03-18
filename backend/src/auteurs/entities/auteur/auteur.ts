@@ -9,12 +9,12 @@ export class Auteur {
   @Column()
   nom: string;
 
-  @Column()
+  @Column({ nullable: true })
   photo: string;
 
   @Column('text')
   biographie: string;
 
-  @OneToMany(() => Livre, livre => livre.auteur)
-  livres: Livre[];
+  @OneToMany(() => Livre, livre => livre.auteur, { eager: true, onDelete: 'CASCADE' })
+  livres: Livre[];  
 }

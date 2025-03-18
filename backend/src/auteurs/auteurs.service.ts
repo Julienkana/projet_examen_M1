@@ -1,20 +1,21 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AuteurRepository } from './repositories/auteur.repository';
 import { Auteur } from 'src/auteurs/entities/auteur/auteur';
 import { CreateAuteurDto } from 'src/auteurs/dto/create-auteur.dto';
 import { UpdateAuteurDto } from 'src/auteurs/dto/update-auteur.dto';
 import { AuteurPresenter } from './presenters/auteur.presenter';
+import { Repository } from 'typeorm';
+import { Livre } from 'src/livres/entities/livre/livre';  // Import de l'entité Livre
 
 @Injectable()
 export class AuteursService {
   constructor(
-    @InjectRepository(AuteurRepository)
-    private readonly auteurRepository: AuteurRepository,
+    @InjectRepository(Auteur)
+    private readonly auteurRepository: Repository<Auteur>,
   ) {}
 
   async findAll() {
-    const auteurs = await this.auteurRepository.findAllWithBooks();
+    const auteurs = await this.auteurRepository.find({ relations: ['livres'] });
     return AuteurPresenter.toListResponse(auteurs);
   }
 
@@ -46,8 +47,10 @@ export class AuteursService {
       throw new NotFoundException(`Auteur avec ID ${id} non trouvé.`);
     }
   
+    await this.auteurRepository.manager.delete(Livre, { auteur: auteur });
+  
     await this.auteurRepository.remove(auteur);
     return { message: `Auteur supprimé avec succès.` };
   }
-
+  
 }

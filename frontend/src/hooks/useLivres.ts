@@ -8,7 +8,7 @@ export const useLivres = (url: string, sortBy: string = '') => {
   useEffect(() => {
     const fetchLivres = async () => {
       try {
-        const response = await fetch(`${url}?sortBy=${sortBy}`);
+        const response = await fetch(`http://localhost:3000/livres?sortBy=${sortBy}`);
         const data = await response.json();
         setLivres(data);
       } catch (error) {
